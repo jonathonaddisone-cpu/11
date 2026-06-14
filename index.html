@@ -1,0 +1,1379 @@
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VibeCoding 共创社区</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17202a;
+      --muted: #64707d;
+      --line: #d9e0e8;
+      --paper: #fbfcfe;
+      --soft: #eef3f7;
+      --brand: #1d7f72;
+      --brand-dark: #116156;
+      --coral: #e35d4f;
+      --gold: #b7791f;
+      --blue: #2f6fbb;
+      --violet: #7464c7;
+      --shadow: 0 18px 46px rgba(28, 43, 59, .12);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(245, 248, 251, .96), rgba(251, 252, 254, 1) 34%),
+        radial-gradient(circle at 12% 0%, rgba(29, 127, 114, .14), transparent 34%),
+        radial-gradient(circle at 84% 10%, rgba(227, 93, 79, .12), transparent 30%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 20px;
+      border-right: 1px solid var(--line);
+      background: rgba(251, 252, 254, .86);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: conic-gradient(from 90deg, var(--brand), var(--blue), var(--coral), var(--brand));
+      color: white;
+      font-weight: 900;
+      letter-spacing: 0;
+      box-shadow: 0 10px 24px rgba(29, 127, 114, .26);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+      margin: 22px 0 28px;
+    }
+
+    .nav button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: #34404c;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav button.active {
+      border-color: rgba(29, 127, 114, .24);
+      background: rgba(29, 127, 114, .1);
+      color: var(--brand-dark);
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      background: white;
+      border: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+
+    .side-panel {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .side-panel h2 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .side-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    main {
+      min-width: 0;
+      padding: 30px clamp(18px, 4vw, 54px) 46px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 4.2vw, 58px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(96px, 1fr));
+      gap: 10px;
+      min-width: min(420px, 100%);
+    }
+
+    .stat {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .86);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 25px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 180px 170px;
+      gap: 10px;
+      margin: 22px 0;
+    }
+
+    .field {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: white;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .field:focus {
+      border-color: rgba(29, 127, 114, .62);
+      box-shadow: 0 0 0 3px rgba(29, 127, 114, .12);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(28, 43, 59, .06);
+      overflow: hidden;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.25;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(47, 111, 187, .2);
+      background: rgba(47, 111, 187, .09);
+      color: #24578f;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .badge.warn {
+      border-color: rgba(183, 121, 31, .28);
+      background: rgba(183, 121, 31, .1);
+      color: #805214;
+    }
+
+    .badge.ok {
+      border-color: rgba(29, 127, 114, .24);
+      background: rgba(29, 127, 114, .1);
+      color: var(--brand-dark);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0;
+    }
+
+    .chip {
+      padding: 5px 8px;
+      border-radius: 7px;
+      background: var(--soft);
+      color: #4d5b68;
+      font-size: 12px;
+    }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .mini {
+      min-height: 118px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px solid #e4eaf0;
+    }
+
+    .mini strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .mini ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .actions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, border .16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(28, 43, 59, .08);
+    }
+
+    .btn.primary {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: white;
+      font-weight: 700;
+    }
+
+    .btn.danger {
+      border-color: rgba(227, 93, 79, .38);
+      color: #af3d33;
+      background: rgba(227, 93, 79, .07);
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(28, 43, 59, .05);
+    }
+
+    .panel-pad { padding: 18px; }
+
+    .panel h3 {
+      margin: 0 0 12px;
+      font-size: 19px;
+    }
+
+    .guide-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .guide {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .guide h4 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .guide ol {
+      margin: 0;
+      padding-left: 22px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .guide-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .guide-note {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(183, 121, 31, .25);
+      background: rgba(183, 121, 31, .08);
+      color: #6f4a15;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .mock-shot {
+      min-height: 178px;
+      border: 1px solid #cdd8e2;
+      border-radius: 8px;
+      background: #f7fafc;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.7);
+    }
+
+    .mock-bar {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 28px;
+      padding: 0 9px;
+      border-bottom: 1px solid #dce5ee;
+      background: #edf3f8;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #e35d4f;
+    }
+
+    .dot:nth-child(2) { background: #e1a93a; }
+    .dot:nth-child(3) { background: #1d7f72; }
+
+    .mock-body {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      min-height: 150px;
+    }
+
+    .mock-side {
+      padding: 10px 7px;
+      background: #253241;
+    }
+
+    .mock-side span,
+    .mock-line {
+      display: block;
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.22);
+      margin-bottom: 9px;
+    }
+
+    .mock-content {
+      padding: 13px;
+      background: white;
+    }
+
+    .mock-title {
+      height: 18px;
+      width: 70%;
+      border-radius: 6px;
+      background: rgba(29, 127, 114, .18);
+      margin-bottom: 14px;
+    }
+
+    .mock-line {
+      height: 10px;
+      background: #dce5ee;
+      width: 88%;
+    }
+
+    .mock-line.short { width: 52%; }
+
+    .mock-highlight {
+      margin-top: 12px;
+      padding: 9px;
+      border: 2px solid var(--coral);
+      border-radius: 8px;
+      color: #af3d33;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(227, 93, 79, .06);
+    }
+
+    .work-feed {
+      display: grid;
+      gap: 12px;
+    }
+
+    .work-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .work-cover {
+      min-height: 112px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: 0;
+      background: linear-gradient(120deg, var(--brand), var(--blue) 52%, var(--coral));
+    }
+
+    .work-card:nth-child(2n) .work-cover {
+      background: linear-gradient(120deg, #34495e, var(--gold), #3d8f6f);
+    }
+
+    .work-card p {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .reaction-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      margin-top: 12px;
+    }
+
+    .comment-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .comment {
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: var(--soft);
+      color: #46525e;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    form {
+      display: grid;
+      gap: 10px;
+    }
+
+    textarea.field {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .empty {
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed #bfccd8;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .74);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid var(--line);
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.55;
+    }
+
+    .compare-table th {
+      background: #f3f7fa;
+      font-size: 13px;
+      color: #40505f;
+    }
+
+    .compare-table tr:last-child td { border-bottom: 0; }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      max-width: min(340px, calc(100vw - 44px));
+      padding: 13px 15px;
+      border-radius: 8px;
+      background: #17202a;
+      color: white;
+      box-shadow: var(--shadow);
+      transform: translateY(120%);
+      opacity: 0;
+      transition: .24s ease;
+      z-index: 20;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 1080px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        height: auto;
+        padding: 16px;
+      }
+      .nav {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin: 16px 0 0;
+      }
+      .side-panel { display: none; }
+      .topbar, .split { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      main { padding: 20px 14px 34px; }
+      .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .toolbar { grid-template-columns: 1fr; }
+      .grid, .pros-cons, .stats { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 34px; }
+      .compare-table { display: block; overflow-x: auto; white-space: nowrap; }
+      .guide-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">VC</div>
+        <div>
+          <h1>VibeCoding 共创社区</h1>
+          <span>工具、教程、作品和灵感流</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="主导航">
+        <button class="active" data-view="tools"><span class="nav-icon">⌘</span>软件库</button>
+        <button data-view="guides"><span class="nav-icon">文</span>汉化教程</button>
+        <button data-view="community"><span class="nav-icon">赞</span>作品社区</button>
+        <button data-view="compare"><span class="nav-icon">比</span>优缺点</button>
+      </nav>
+
+      <div class="side-panel">
+        <h2>适合的使用方式</h2>
+        <p>先选工具，再看汉化和环境配置，最后把自己的项目发布到社区。点赞、评论、作品数据会保存在本机浏览器中。</p>
+      </div>
+    </aside>
+
+    <main>
+      <section class="topbar">
+        <div class="hero">
+          <h2>把 VibeCoding 从“会用”变成“会搭”。</h2>
+          <p>这里集合常用 AI 编程工具、官方下载入口、优缺点、中文化教程和作品交流。新手可以按路线搭建环境，老手可以发布作品、收集创意、给好点子点赞。</p>
+        </div>
+        <div class="stats" aria-label="社区统计">
+          <div class="stat"><strong id="toolCount">0</strong><span>精选工具</span></div>
+          <div class="stat"><strong id="workCount">0</strong><span>社区作品</span></div>
+          <div class="stat"><strong id="likeCount">0</strong><span>累计点赞</span></div>
+        </div>
+      </section>
+
+      <section class="section active" id="tools">
+        <div class="toolbar">
+          <input class="field" id="searchInput" placeholder="搜索 Cursor、Trae、通义灵码、部署工具..." />
+          <select class="field" id="typeFilter" aria-label="工具类型">
+            <option value="all">全部类型</option>
+            <option value="编辑器">编辑器</option>
+            <option value="运行环境">运行环境</option>
+            <option value="版本管理">版本管理</option>
+            <option value="部署协作">部署协作</option>
+            <option value="在线生成">在线生成</option>
+            <option value="设计工具">设计工具</option>
+            <option value="调试工具">调试工具</option>
+          </select>
+          <select class="field" id="levelFilter" aria-label="适合人群">
+            <option value="all">全部人群</option>
+            <option value="入门">入门</option>
+            <option value="进阶">进阶</option>
+            <option value="团队">团队</option>
+          </select>
+        </div>
+        <div class="grid" id="toolGrid"></div>
+      </section>
+
+      <section class="section" id="guides">
+        <div class="split">
+          <div class="guide-list" id="guideList"></div>
+          <aside class="panel panel-pad">
+            <h3>搭建路线</h3>
+            <div class="guide">
+              <h4>推荐顺序</h4>
+              <ol>
+                <li>安装 VS Code 或 Cursor 作为主编辑器。</li>
+                <li>安装 Git，配置用户名和邮箱。</li>
+                <li>安装 Node.js LTS 与 Python，用于运行大多数项目。</li>
+                <li>启用中文界面、中文提示词模板和常用扩展。</li>
+                <li>把第一个作品发布到社区，接受反馈后迭代。</li>
+              </ol>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="community">
+        <div class="split">
+          <div class="work-feed" id="workFeed"></div>
+          <aside class="panel panel-pad">
+            <h3>发布作品</h3>
+            <form id="postForm">
+              <input class="field" id="postTitle" maxlength="42" placeholder="作品名称" required />
+              <input class="field" id="postAuthor" maxlength="20" placeholder="你的昵称" required />
+              <select class="field" id="postCategory">
+                <option>网页应用</option>
+                <option>小游戏</option>
+                <option>效率工具</option>
+                <option>AI 工作流</option>
+                <option>学习笔记</option>
+              </select>
+              <textarea class="field" id="postDesc" maxlength="180" placeholder="介绍一下作品亮点、用到的工具、想征集的建议" required></textarea>
+              <button class="btn primary" type="submit">发布到社区</button>
+            </form>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="compare">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>工具</th>
+              <th>适合场景</th>
+              <th>主要优势</th>
+              <th>可能短板</th>
+              <th>中文化/联网提示</th>
+            </tr>
+          </thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const tools = [
+      {
+        name: "Cursor",
+        type: "编辑器",
+        level: "入门",
+        url: "https://www.cursor.com/downloads",
+        network: "可能需要 VPN/加速",
+        networkLevel: "warn",
+        localize: "内置界面以英文为主，可搭配中文提示词、中文规则文件和 VS Code 扩展生态降低使用门槛。",
+        tags: ["AI 结对编程", "项目理解", "代码生成"],
+        pros: ["AI 改代码体验顺手", "适合边聊边改项目", "VS Code 用户迁移成本低"],
+        cons: ["高频使用通常需要订阅", "新手容易过度依赖生成结果", "复杂项目仍需人工审查"]
+      },
+      {
+        name: "Visual Studio Code",
+        type: "编辑器",
+        level: "入门",
+        url: "https://code.visualstudio.com/download",
+        network: "国内通常可直连",
+        networkLevel: "ok",
+        localize: "在扩展市场搜索 Chinese (Simplified) Language Pack，安装后重启即可中文化。",
+        tags: ["免费", "扩展丰富", "稳定"],
+        pros: ["生态最大、教程多", "中文语言包成熟", "适合各种技术栈"],
+        cons: ["AI 能力依赖额外扩展", "扩展装太多会变慢", "需要自己配置工作流"]
+      },
+      {
+        name: "Windsurf",
+        type: "编辑器",
+        level: "进阶",
+        url: "https://windsurf.com/editor",
+        network: "可能需要 VPN/海外账号",
+        networkLevel: "warn",
+        localize: "界面主要以英文为主，建议建立中文项目说明、中文任务清单和中文 Prompt 模板。",
+        tags: ["AI Agent", "自动修改", "多文件"],
+        pros: ["Agent 工作流完整", "适合多文件连续修改", "上手比传统 IDE 更轻"],
+        cons: ["网络和账号体验会影响稳定性", "中文资料相对少", "自动化修改需要认真复核"]
+      },
+      {
+        name: "Git",
+        type: "版本管理",
+        level: "入门",
+        url: "https://git-scm.com/downloads/win",
+        network: "国内通常可直连",
+        networkLevel: "ok",
+        localize: "安装界面可按默认选项完成；日常命令建议用中文速查表辅助记忆。",
+        tags: ["版本回退", "协作", "必装"],
+        pros: ["几乎所有项目都需要", "方便回退和分支管理", "与 GitHub/Gitee 无缝配合"],
+        cons: ["概念初学有门槛", "冲突解决需要练习", "命令行报错不够友好"]
+      },
+      {
+        name: "Node.js",
+        type: "运行环境",
+        level: "入门",
+        url: "https://nodejs.org/en/download",
+        network: "官网通常可访问，依赖下载可能需镜像",
+        networkLevel: "warn",
+        localize: "安装 LTS 版本即可；包管理器报错可优先查中文社区，但以官方文档为准。",
+        tags: ["前端", "工具链", "npm"],
+        pros: ["前端项目核心环境", "生态庞大", "脚手架和自动化工具丰富"],
+        cons: ["依赖版本可能冲突", "国内网络下安装包偶有波动", "需要理解 npm/pnpm/yarn 差异"]
+      },
+      {
+        name: "Python",
+        type: "运行环境",
+        level: "入门",
+        url: "https://www.python.org/downloads/",
+        network: "国内通常可直连",
+        networkLevel: "ok",
+        localize: "安装时勾选 Add Python to PATH；编辑器、教程和报错资料都有大量中文资源。",
+        tags: ["脚本", "AI", "数据处理"],
+        pros: ["语法友好", "AI 和自动化生态强", "适合写小工具"],
+        cons: ["环境隔离容易混乱", "包版本兼容需管理", "大型工程需要规范约束"]
+      },
+      {
+        name: "GitHub Desktop",
+        type: "部署协作",
+        level: "入门",
+        url: "https://desktop.github.com/download/",
+        network: "GitHub 服务可能需要加速",
+        networkLevel: "warn",
+        localize: "客户端界面以英文为主，但常用操作少，可配合中文术语表学习 commit、push、pull。",
+        tags: ["可视化 Git", "GitHub", "协作"],
+        pros: ["减少命令行压力", "适合新手提交作品", "分支和历史更直观"],
+        cons: ["高级 Git 操作有限", "需要 GitHub 账号", "英文界面对新手略有门槛"]
+      },
+      {
+        name: "Vercel",
+        type: "部署协作",
+        level: "团队",
+        url: "https://vercel.com/",
+        network: "通常需要海外网络/账号",
+        networkLevel: "warn",
+        localize: "控制台以英文为主；建议保存中文部署流程卡片，记录导入仓库、环境变量、域名绑定步骤。",
+        tags: ["网站部署", "预览链接", "团队协作"],
+        pros: ["前端部署很快", "自动生成预览链接", "适合分享 VibeCoding 作品"],
+        cons: ["后端和数据库能力需额外设计", "部分能力付费", "域名和环境变量对新手有门槛"]
+      },
+      {
+        name: "Trae",
+        type: "编辑器",
+        level: "入门",
+        url: "https://www.trae.ai/",
+        network: "国内体验相对友好",
+        networkLevel: "ok",
+        localize: "适合作为 Cursor/Windsurf 的替代路线，中文资料和中文交互门槛更低。",
+        tags: ["AI IDE", "中文友好", "新手路线"],
+        pros: ["对中文用户更友好", "内置 AI 辅助编程", "适合快速开始项目"],
+        cons: ["生态和资料仍在扩展", "不同地区可用能力可能不同", "复杂工程仍需人工把关"]
+      },
+      {
+        name: "通义灵码",
+        type: "编辑器",
+        level: "入门",
+        url: "https://lingma.aliyun.com/",
+        network: "国内通常可直连",
+        networkLevel: "ok",
+        localize: "中文支持好，可在 VS Code、JetBrains 等编辑器中使用，也适合中文问答和代码解释。",
+        tags: ["国产 AI 编程", "中文问答", "插件"],
+        pros: ["中文理解更自然", "国内账号和网络更顺", "适合代码解释和补全"],
+        cons: ["不同 IDE 体验不完全一致", "复杂生成仍需复核", "部分高级能力可能依赖登录"]
+      },
+      {
+        name: "CodeGeeX",
+        type: "编辑器",
+        level: "入门",
+        url: "https://codegeex.cn/",
+        network: "国内通常可直连",
+        networkLevel: "ok",
+        localize: "提供中文说明和插件路线，适合先在熟悉的编辑器里加 AI 能力。",
+        tags: ["代码补全", "插件", "中文友好"],
+        pros: ["安装成本低", "适合代码解释和补全", "中文资料较好找"],
+        cons: ["整体项目改造能力弱于完整 AI IDE", "插件权限需要留意", "仍要检查生成质量"]
+      },
+      {
+        name: "GitHub Copilot",
+        type: "编辑器",
+        level: "进阶",
+        url: "https://github.com/features/copilot",
+        network: "GitHub 服务可能需要加速",
+        networkLevel: "warn",
+        localize: "界面和文档多为英文，建议搭配中文注释、中文需求文档和 VS Code 中文包。",
+        tags: ["代码补全", "VS Code", "JetBrains"],
+        pros: ["补全体验成熟", "IDE 支持广", "适合日常代码续写"],
+        cons: ["通常需要订阅", "依赖 GitHub 账号", "中文教学需要自行整理"]
+      },
+      {
+        name: "Gitee",
+        type: "部署协作",
+        level: "入门",
+        url: "https://gitee.com/",
+        network: "国内通常可直连",
+        networkLevel: "ok",
+        localize: "中文界面完整，适合小白先理解仓库、提交、协作，再迁移到 GitHub。",
+        tags: ["代码托管", "中文界面", "协作"],
+        pros: ["国内访问稳定", "中文界面", "适合教学和作品备份"],
+        cons: ["国际生态弱于 GitHub", "部分开源项目仍在 GitHub", "部署集成选择较少"]
+      },
+      {
+        name: "Docker Desktop",
+        type: "运行环境",
+        level: "进阶",
+        url: "https://www.docker.com/products/docker-desktop/",
+        network: "镜像下载可能需要加速",
+        networkLevel: "warn",
+        localize: "界面英文为主，小白可以先按项目教程复制命令，不必马上理解全部容器概念。",
+        tags: ["环境隔离", "数据库", "后端"],
+        pros: ["统一开发环境", "运行数据库很方便", "适合团队复现项目"],
+        cons: ["安装体积较大", "Windows 需要 WSL 配合", "镜像下载可能卡住"]
+      },
+      {
+        name: "Figma",
+        type: "设计工具",
+        level: "入门",
+        url: "https://www.figma.com/downloads/",
+        network: "可能需要加速",
+        networkLevel: "warn",
+        localize: "界面英文为主，但社区中文教程很多，适合做原型图、界面参考和设计交付。",
+        tags: ["界面设计", "原型", "协作"],
+        pros: ["做 UI 原型直观", "组件和模板丰富", "适合与前端协作"],
+        cons: ["在线协作依赖网络", "高级功能付费", "英文界面对小白有门槛"]
+      },
+      {
+        name: "Postman",
+        type: "调试工具",
+        level: "进阶",
+        url: "https://www.postman.com/downloads/",
+        network: "下载通常可访问，登录同步可能需加速",
+        networkLevel: "warn",
+        localize: "界面英文为主；小白只需先学会填 URL、Method、Body、Send 四个位置。",
+        tags: ["接口测试", "后端", "API"],
+        pros: ["调接口很直观", "适合排查前后端问题", "集合和环境变量好用"],
+        cons: ["概念较多", "同步能力依赖账号", "英文术语需要学习"]
+      },
+      {
+        name: "Bolt.new",
+        type: "在线生成",
+        level: "入门",
+        url: "https://bolt.new/",
+        network: "通常需要海外网络/账号",
+        networkLevel: "warn",
+        localize: "在线英文界面为主，建议用中文写需求后让工具生成，再把代码下载到本地继续改。",
+        tags: ["在线做应用", "快速原型", "前端"],
+        pros: ["不用先配环境", "适合快速看效果", "能生成可运行项目"],
+        cons: ["网络门槛高", "复杂需求容易跑偏", "长期项目最好迁回本地"]
+      },
+      {
+        name: "Lovable",
+        type: "在线生成",
+        level: "入门",
+        url: "https://lovable.dev/",
+        network: "通常需要海外网络/账号",
+        networkLevel: "warn",
+        localize: "适合用中文描述产品页面，再根据生成结果微调文案和交互。",
+        tags: ["产品原型", "在线生成", "分享链接"],
+        pros: ["产品感强", "适合非技术用户起步", "分享预览方便"],
+        cons: ["网络和账号门槛高", "细节控制需要反复沟通", "后期工程化仍需整理"]
+      },
+      {
+        name: "Replit",
+        type: "在线生成",
+        level: "入门",
+        url: "https://replit.com/",
+        network: "通常需要海外网络/账号",
+        networkLevel: "warn",
+        localize: "在线环境以英文为主，适合课堂演示和无需安装的入门练习。",
+        tags: ["在线 IDE", "AI Agent", "课堂演示"],
+        pros: ["浏览器里就能运行", "适合分享和教学", "不用本地装依赖"],
+        cons: ["国内访问不稳定", "免费资源有限", "复杂项目迁移要花时间"]
+      },
+      {
+        name: "Netlify",
+        type: "部署协作",
+        level: "团队",
+        url: "https://www.netlify.com/",
+        network: "通常需要海外网络/账号",
+        networkLevel: "warn",
+        localize: "控制台英文为主；小白可先学拖拽部署静态网页，再学连接代码仓库。",
+        tags: ["静态网站", "预览", "部署"],
+        pros: ["部署静态站简单", "表单和预览能力成熟", "适合展示作品"],
+        cons: ["国内访问体验不稳定", "高级功能付费", "后端能力有限"]
+      },
+      {
+        name: "Cloudflare Pages",
+        type: "部署协作",
+        level: "团队",
+        url: "https://pages.cloudflare.com/",
+        network: "后台可能需要加速",
+        networkLevel: "warn",
+        localize: "英文控制台为主，适合部署静态网站和前端项目。",
+        tags: ["静态网站", "边缘网络", "部署"],
+        pros: ["免费额度友好", "访问速度通常不错", "适合个人作品页"],
+        cons: ["配置项较多", "账号和后台访问可能卡", "小白需要跟着教程操作"]
+      },
+      {
+        name: "Supabase",
+        type: "部署协作",
+        level: "进阶",
+        url: "https://supabase.com/",
+        network: "通常需要海外网络/账号",
+        networkLevel: "warn",
+        localize: "后台英文为主；适合需要登录、数据库、文件上传的小项目。",
+        tags: ["数据库", "登录", "后端服务"],
+        pros: ["快速补齐后端能力", "文档和模板多", "适合 MVP"],
+        cons: ["数据库概念有门槛", "国内访问不一定稳定", "生产项目要理解安全规则"]
+      }
+    ];
+
+    const guides = [
+      {
+        title: "VS Code 中文界面",
+        note: "VPN 标注：VS Code 官网和中文语言包通常国内可用；如果扩展市场加载慢，可以稍后重试或切换网络。",
+        visual: "扩展市场里搜索 Chinese，点击 Install 后重启",
+        steps: [
+          "打开扩展市场，搜索 Chinese (Simplified) Language Pack。",
+          "安装 Microsoft 发布的中文语言包。",
+          "按提示重启编辑器，界面会切换为简体中文。",
+          "如果没有自动切换，打开命令面板，选择 Configure Display Language。"
+        ]
+      },
+      {
+        title: "Cursor 中文工作流",
+        note: "VPN 标注：Cursor 账号登录、模型服务和下载页在国内可能不稳定，建议准备可用的网络加速方案；不方便时可先用 Trae、通义灵码、CodeGeeX 替代。",
+        visual: "左侧文件，右侧 AI 对话，先写中文任务再让 AI 修改",
+        steps: [
+          "项目根目录建立 README.zh-CN.md，写清楚项目目标和目录说明。",
+          "把常用要求写成中文规则，例如输出中文注释、保留现有风格、先解释再修改。",
+          "提问时给出背景、目标、限制和验收方式，减少 AI 猜测。",
+          "每次生成后运行项目并检查差异，重要功能保留人工 review。"
+        ]
+      },
+      {
+        title: "Git 新手汉化理解",
+        note: "VPN 标注：Git 安装通常不需要 VPN；GitHub 访问、推送和登录可能需要加速，国内学习可先用 Gitee 练手。",
+        visual: "把修改文件加入暂存区，再提交成一次存档",
+        steps: [
+          "把 commit 理解为一次存档，把 branch 理解为一条试验路线。",
+          "先用 GitHub Desktop 完成提交和推送，再逐步学习命令。",
+          "常用四步是查看改动、提交、拉取、推送。",
+          "遇到冲突时先备份，再按文件逐个处理，不要急着覆盖。"
+        ]
+      },
+      {
+        title: "Node.js 安装与依赖下载",
+        note: "VPN 标注：Node.js 官网通常能打开，但 npm 安装依赖可能慢；小白可以先搜索 npm 国内镜像或使用 pnpm 配合镜像源。",
+        visual: "下载 LTS 版本，安装后在终端检查 node 和 npm",
+        steps: [
+          "打开 Node.js 官网，优先选择 LTS 版本。",
+          "安装时保持默认选项，完成后重启编辑器或终端。",
+          "在终端输入 node -v 和 npm -v，能显示版本号就成功。",
+          "如果 npm install 很慢，先确认网络，再考虑使用国内镜像。"
+        ]
+      },
+      {
+        title: "在线生成工具使用路线",
+        note: "VPN 标注：Bolt.new、Lovable、Replit、Vercel、Netlify、Supabase 多数需要海外账号或加速网络；国内不稳定时，先把需求写好，等网络可用时集中生成。",
+        visual: "输入中文需求，生成预览，再导出代码到本地继续修改",
+        steps: [
+          "先用一句话说明你要做什么，例如：做一个作品展示社区首页。",
+          "补充页面、按钮、数据和风格要求，不要一次只写“帮我做网站”。",
+          "看到预览后先检查核心功能，再让 AI 修改细节。",
+          "满意后导出代码，放到本地编辑器继续保存和管理。"
+        ]
+      },
+      {
+        title: "作品发布检查清单",
+        note: "VPN 标注：如果作品托管在 Vercel、Netlify、GitHub Pages，部分用户可能打不开；可以同时准备截图、录屏或国内镜像链接。",
+        visual: "作品标题、截图、预览链接、求反馈问题都要填清楚",
+        steps: [
+          "确认首页能直接展示核心功能，不只是一段介绍。",
+          "准备一张截图、一个在线预览地址和一段 100 字以内说明。",
+          "写清楚使用了哪些工具，哪些部分希望社区给建议。",
+          "发布后根据点赞和评论，把下一版改动记录在作品说明里。"
+        ]
+      }
+    ];
+
+    const defaultWorks = [
+      {
+        id: "seed-1",
+        title: "Prompt 灵感卡片墙",
+        author: "小林",
+        category: "AI 工作流",
+        desc: "把常用提示词整理成可筛选卡片，适合团队共享开发习惯和复用项目规则。",
+        likes: 28,
+        comments: ["想加一个按技术栈筛选。", "可以导出为 Markdown 就更好。"]
+      },
+      {
+        id: "seed-2",
+        title: "三分钟作品展示页",
+        author: "Ava",
+        category: "网页应用",
+        desc: "输入项目名、截图和链接，自动生成一个干净的作品介绍页，用来发到社群收反馈。",
+        likes: 41,
+        comments: ["视觉很舒服。", "建议支持多个截图轮播。"]
+      }
+    ];
+
+    const state = {
+      works: loadWorks(),
+      liked: JSON.parse(localStorage.getItem("vc-liked") || "[]")
+    };
+
+    const views = document.querySelectorAll(".section");
+    const navButtons = document.querySelectorAll(".nav button");
+    const toolGrid = document.getElementById("toolGrid");
+    const guideList = document.getElementById("guideList");
+    const workFeed = document.getElementById("workFeed");
+    const compareBody = document.getElementById("compareBody");
+    const toast = document.getElementById("toast");
+
+    function loadWorks() {
+      const saved = localStorage.getItem("vc-works");
+      return saved ? JSON.parse(saved) : defaultWorks;
+    }
+
+    function saveWorks() {
+      localStorage.setItem("vc-works", JSON.stringify(state.works));
+      localStorage.setItem("vc-liked", JSON.stringify(state.liked));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2100);
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function renderStats() {
+      document.getElementById("toolCount").textContent = tools.length;
+      document.getElementById("workCount").textContent = state.works.length;
+      document.getElementById("likeCount").textContent = state.works.reduce((sum, item) => sum + item.likes, 0);
+    }
+
+    function renderTools() {
+      const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+      const type = document.getElementById("typeFilter").value;
+      const level = document.getElementById("levelFilter").value;
+      const list = tools.filter(tool => {
+        const matchKeyword = !keyword || [tool.name, tool.type, tool.level, tool.tags.join(" "), tool.localize, tool.network].join(" ").toLowerCase().includes(keyword);
+        const matchType = type === "all" || tool.type === type;
+        const matchLevel = level === "all" || tool.level === level;
+        return matchKeyword && matchType && matchLevel;
+      });
+
+      toolGrid.innerHTML = list.length ? list.map(tool => `
+        <article class="card">
+          <div class="card-body">
+            <div class="card-head">
+              <div>
+                <h3>${escapeHTML(tool.name)}</h3>
+                <div class="meta">${tool.tags.map(tag => `<span class="chip">${escapeHTML(tag)}</span>`).join("")}</div>
+              </div>
+              <span class="badge">${escapeHTML(tool.type)}</span>
+            </div>
+            <div class="meta">
+              <span class="badge ${tool.networkLevel === "ok" ? "ok" : "warn"}">${escapeHTML(tool.network)}</span>
+            </div>
+            <p>${escapeHTML(tool.localize)}</p>
+            <div class="pros-cons">
+              <div class="mini">
+                <strong>优点</strong>
+                <ul>${tool.pros.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul>
+              </div>
+              <div class="mini">
+                <strong>注意</strong>
+                <ul>${tool.cons.map(item => `<li>${escapeHTML(item)}</li>`).join("")}</ul>
+              </div>
+            </div>
+            <div class="actions">
+              <a class="btn primary" href="${tool.url}" target="_blank" rel="noreferrer">官方下载</a>
+              <button class="btn" data-copy="${escapeHTML(tool.name)}">复制推荐语</button>
+            </div>
+          </div>
+        </article>
+      `).join("") : `<div class="empty">没有找到匹配工具，换个关键词试试。</div>`;
+    }
+
+    function renderGuides() {
+      guideList.innerHTML = guides.map(guide => `
+        <article class="guide">
+          <div class="guide-layout">
+            <div>
+              <h4>${escapeHTML(guide.title)}</h4>
+              <ol>${guide.steps.map(step => `<li>${escapeHTML(step)}</li>`).join("")}</ol>
+              <div class="guide-note">${escapeHTML(guide.note)}</div>
+            </div>
+            <div class="mock-shot" aria-label="${escapeHTML(guide.title)}示意图">
+              <div class="mock-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div class="mock-body">
+                <div class="mock-side"><span></span><span></span><span></span><span></span></div>
+                <div class="mock-content">
+                  <div class="mock-title"></div>
+                  <span class="mock-line"></span>
+                  <span class="mock-line"></span>
+                  <span class="mock-line short"></span>
+                  <div class="mock-highlight">${escapeHTML(guide.visual)}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderWorks() {
+      workFeed.innerHTML = state.works.length ? state.works.map(work => {
+        const liked = state.liked.includes(work.id);
+        return `
+          <article class="work-card">
+            <div class="work-cover">${escapeHTML(work.category.slice(0, 2))}</div>
+            <div class="card-body">
+              <div class="card-head">
+                <div>
+                  <h3>${escapeHTML(work.title)}</h3>
+                  <div class="meta">
+                    <span class="chip">${escapeHTML(work.author)}</span>
+                    <span class="chip">${escapeHTML(work.category)}</span>
+                  </div>
+                </div>
+                <span class="badge">${work.likes} 赞</span>
+              </div>
+              <p>${escapeHTML(work.desc)}</p>
+              <div class="comment-list">
+                ${(work.comments || []).map(comment => `<div class="comment">${escapeHTML(comment)}</div>`).join("")}
+              </div>
+              <div class="reaction-row">
+                <button class="btn ${liked ? "danger" : ""}" data-like="${work.id}">${liked ? "已点赞" : "点赞创意"}</button>
+                <button class="btn" data-comment="${work.id}">快速评论</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("") : `<div class="empty">还没有作品，来发布第一个吧。</div>`;
+      renderStats();
+    }
+
+    function renderCompare() {
+      compareBody.innerHTML = tools.map(tool => `
+        <tr>
+          <td><strong>${escapeHTML(tool.name)}</strong><br><span class="chip">${escapeHTML(tool.type)}</span></td>
+          <td>${escapeHTML(tool.tags.join(" / "))}</td>
+          <td>${escapeHTML(tool.pros.join("；"))}</td>
+          <td>${escapeHTML(tool.cons.join("；"))}</td>
+          <td><span class="badge ${tool.networkLevel === "ok" ? "ok" : "warn"}">${escapeHTML(tool.network)}</span><br>${escapeHTML(tool.localize)}</td>
+        </tr>
+      `).join("");
+    }
+
+    navButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        navButtons.forEach(item => item.classList.remove("active"));
+        views.forEach(view => view.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById(button.dataset.view).classList.add("active");
+      });
+    });
+
+    document.getElementById("searchInput").addEventListener("input", renderTools);
+    document.getElementById("typeFilter").addEventListener("change", renderTools);
+    document.getElementById("levelFilter").addEventListener("change", renderTools);
+
+    toolGrid.addEventListener("click", async event => {
+      const name = event.target.dataset.copy;
+      if (!name) return;
+      const tool = tools.find(item => item.name === name);
+      const text = `${tool.name}：${tool.pros[0]}，适合${tool.tags.join("、")}场景。联网提示：${tool.network}。官方下载：${tool.url}`;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("推荐语已复制");
+      } catch {
+        showToast(text);
+      }
+    });
+
+    workFeed.addEventListener("click", event => {
+      const likeId = event.target.dataset.like;
+      const commentId = event.target.dataset.comment;
+      if (likeId) {
+        const work = state.works.find(item => item.id === likeId);
+        const index = state.liked.indexOf(likeId);
+        if (index >= 0) {
+          state.liked.splice(index, 1);
+          work.likes -= 1;
+        } else {
+          state.liked.push(likeId);
+          work.likes += 1;
+        }
+        saveWorks();
+        renderWorks();
+      }
+      if (commentId) {
+        const text = prompt("写一句建议或鼓励：");
+        if (!text || !text.trim()) return;
+        const work = state.works.find(item => item.id === commentId);
+        work.comments = work.comments || [];
+        work.comments.unshift(text.trim().slice(0, 80));
+        saveWorks();
+        renderWorks();
+        showToast("评论已添加");
+      }
+    });
+
+    document.getElementById("postForm").addEventListener("submit", event => {
+      event.preventDefault();
+      state.works.unshift({
+        id: `work-${Date.now()}`,
+        title: document.getElementById("postTitle").value.trim(),
+        author: document.getElementById("postAuthor").value.trim(),
+        category: document.getElementById("postCategory").value,
+        desc: document.getElementById("postDesc").value.trim(),
+        likes: 0,
+        comments: []
+      });
+      saveWorks();
+      event.target.reset();
+      renderWorks();
+      showToast("作品发布成功");
+    });
+
+    renderStats();
+    renderTools();
+    renderGuides();
+    renderWorks();
+    renderCompare();
+  </script>
+</body>
+</html>
